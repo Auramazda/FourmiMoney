@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fourmimoney-v2.7</title>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js">
+    </script> 
+    <style>
+      body {
+      }
+
+      #board {
+        display: grid;
+        grid-template-columns: repeat(7, 50px);
+        grid-template-rows: repeat(7, 50px);
+        gap: 2px;
+        margin: 30px;
+        width: fit-content;
+        border-top: 30px solid red;
+        border-left: 30px solid blue;
+        border-bottom: 30px solid green;
+        border-right: 30px solid yellow;
+      }
+
+      .square {
+        width: 50px;
+        height: 50px;
+        background-color: gray;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .square:nth-child(25) {
+        background-color: black;
+      }
+      .pawn {
+        width: 100%;
+        height: 100%;
+        background-color: #fff;
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="board"></div>
+
+    <script>
+      const board = document.getElementById("board");
+      const numRows = 7;
+      const numCols = 7;
+      const initialRow = Math.floor(numRows / 2) + 1;
+      const initialCol = Math.floor(numCols / 2) + 1;
+
+      let currentRow = initialRow;
+      let currentCol = initialCol;
+
+      // Create a seeded random number generator
+      // var prng = new Math.seedrandom();
+
+      function createBoard() {
+        for (let row = 1; row <= numRows; row++) {
+          for (let col = 1; col <= numCols; col++) {
+            const square = document.createElement("div");
+            square.className = "square";
+            if (row === initialRow && col === initialCol) {
+              const pawn = document.createElement("div");
+              pawn.className = "pawn";
+              square.appendChild(pawn);
+            }
+            board.appendChild(square);
+          }
+        }
+      }
+
+      function movePawn() {
+        let randomDirection;
+        let up = 0;
+        let right = 0;
+        let down = 0;
+        let left = 0;
+        while (up < 3 && right < 3 && down < 3 && left < 3) {
+          const innerRandomDirection = Math.floor(Math.random() * 4);
+          // console.log("innerRandomDirection", innerRandomDirection);
+          if (innerRandomDirection === 2) up++;
+          if (innerRandomDirection === 3) right++;
+          if (innerRandomDirection === 4) down++;
+          if (innerRandomDirection === 1) left++;
+        }
+
+        if (up === 3) randomDirection = 1;
+        if (right === 3) randomDirection = 2;
+        if (down === 3) randomDirection = 3;
+        if (left === 3) randomDirection = 4;
+
+        // console.log("randomDirection", randomDirection);
+
+        switch (randomDirection) {
+          case 1: // Move up
+            if (currentRow > 1) currentRow--;
+            break;
+          case 2: // Move right
+            if (currentCol < numCols) currentCol++;
+            break;
+          case 3: // Move down
+            if (currentRow < numRows) currentRow++;
+            break;
+          case 4: // Move left
+            if (currentCol > 1) currentCol--;
+            break;
+        }
+        updatePawnPosition();
+      }
+
+      function updatePawnPosition() {
+        const squares = document.querySelectorAll(".square");
+        squares.forEach((square, index) => {
+          square.innerHTML = "";
+          if (
+            Math.floor(index / numCols) + 1 === currentRow &&
+            (index % numCols) + 1 === currentCol
+          ) {
+            const pawn = document.createElement("div");
+            pawn.className = "pawn";
+            square.appendChild(pawn);
+          }
+        });
+      }
+
+      createBoard();
+
+      const interval = setInterval(movePawn, 2000);
+
+      // Stop the movement when the pawn reaches the edge
+      function stopMovement() {
+        if (
+          currentRow === 1 ||
+          currentRow === numRows ||
+          currentCol === 1 ||
+          currentCol === numCols
+        ) {
+          clearInterval(interval);
+          if (currentRow === 1) {
+            document.querySelector(".pawn").style.backgroundColor = "red";
+          }
+
+          if (currentRow === numRows) {
+            document.querySelector(".pawn").style.backgroundColor = "green";
+          }
+
+          if (currentCol === 1) {
+            document.querySelector(".pawn").style.backgroundColor = "blue";
+          }
+
+          if (currentCol === numCols) {
+            document.querySelector(".pawn").style.backgroundColor = "yellow";
+          }
+        }
+      }
+
+      setInterval(stopMovement, 1000);
+    </script>
+  </body>
+</html>
