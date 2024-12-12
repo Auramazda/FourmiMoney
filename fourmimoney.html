@@ -82,10 +82,10 @@
         while (up < 3 && right < 3 && down < 3 && left < 3) {
           const innerRandomDirection = Math.floor(Math.random() * 4);
           // console.log("innerRandomDirection", innerRandomDirection);
-          if (innerRandomDirection === 2) up++;
-          if (innerRandomDirection === 3) right++;
-          if (innerRandomDirection === 4) down++;
-          if (innerRandomDirection === 1) left++;
+          if (innerRandomDirection === 4) up++;
+          if (innerRandomDirection === 1) right++;
+          if (innerRandomDirection === 2) down++;
+          if (innerRandomDirection === 3) left++;
         }
 
         if (up === 3) randomDirection = 1;
